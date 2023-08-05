@@ -1,0 +1,37 @@
+
+/* .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+.custommodal{
+  font-size: 40px;
+  top: 30%;
+  width: 100%;
+  max-width: 500px;
+  max-height: 600px;
+}
+.customModalTry {
+  margin: 0 !important;
+  background:none;
+  padding:0 !important;
+}
+
+@media (max-width: 600px) {
+  /* .custommodal {
+    max-width: 200px;
+  } */
+
+}
+/* 
+.closeIcon{
+  position: absolute;
+  top: -10px;
+  left: 93%;
+} */
