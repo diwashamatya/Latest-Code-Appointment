@@ -43,7 +43,7 @@ const Sidebar = () => {
                open ? "w-[289]" : "w-[60px] p-[5px] ml-0"
              } relative duration-300 `}
           >
-            <Link to="/">
+            <Link to="/dashboard">
               <div className="flex ml-3 justify-center gap-3 items-center">
                 <img src={dashboard} className="w-[20px] h-[20px]" />
                 <h3 className={`${!open && "hidden"}`}>Dashboard</h3>
@@ -57,10 +57,13 @@ const Sidebar = () => {
               open ? "w-[289]" : "w-[60px] p-[5px] ml-0"
             }  relative duration-300`}
           >
-            <div className="flex ml-3 justify-center gap-3 items-center ">
-              <img src={appointment} className="w-[20px] h-[20px]" />
+            <Link to='/appointment'>
+             <div className="flex ml-3 justify-center gap-3 items-center ">
+              <img src={appointment} className="w-[20px] h-[20px]" alt="appointment"/>
               <h3 className={`${!open && "hidden"}`}>Appointment</h3>{" "}
             </div>
+            </Link>
+           
           </div>
           <div
             className={`flex  w-[200px] h-[47px] bg-[#78C1F3] items-center 

@@ -33,7 +33,7 @@ export const NavbarTry = () => {
   return (
     <header className="border-b bg-#FFFFFF z-10 bg-white border-gray-300 py-2 sticky top-0">
       <div className="flex items-center justify-between lg:mr-4 mx-0 mx-auto flex-wrap">
-        <Link to="/">
+        <Link to="/dashboard">
           <div className="flex items-center">
             <img
               src={Neutroline_logo}
@@ -220,6 +220,7 @@ export const NavbarTry = () => {
               open ? "w-[289]" : "w-[60px] p-[5px] ml-0"
             }  relative duration-300`}
               >
+                <Link to='/appointment'>
                 <div className="flex ml-3 justify-center gap-3 items-center ">
                   <img src={appointment} className="w-[20px] h-[20px]" />
                   <h3
@@ -230,6 +231,7 @@ export const NavbarTry = () => {
                     Appointment
                   </h3>{" "}
                 </div>
+                </Link>
               </div>
             </li>
             <li>
