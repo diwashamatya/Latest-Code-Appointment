@@ -19,10 +19,14 @@ const getFormattedDate = (date) => {
     "Dec",
   ];
 
-  const day = daysOfWeek[date.getDay()];
-  const dayOfMonth = date.getDate();
-  const month = months[date.getMonth()];
-  const year = date.getFullYear();
+  // Calculate tomorrow's date
+  const tomorrowDate = new Date(date);
+  tomorrowDate.setDate(date.getDate() + 1);
+
+  const day = daysOfWeek[tomorrowDate.getDay()];
+  const dayOfMonth = tomorrowDate.getDate();
+  const month = months[tomorrowDate.getMonth()];
+  const year = tomorrowDate.getFullYear();
 
   return `${day} ${dayOfMonth}, ${month} ${year}`;
 };

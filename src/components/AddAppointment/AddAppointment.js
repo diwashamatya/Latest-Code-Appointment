@@ -12,6 +12,12 @@ import sucessGreen from "../../assets/sucess-green.svg";
 import "./CalenderModal.css";
 import Simple from "../../shared/Calender/Sample";
 import Detail from "../../shared/AppointmentDetail/Detail";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setAppointmentForm,
+  setAppointmentFormError,
+  resetAppointmentForm,
+} from "../../redux/actions/addAppointmentAction";
 const closeIcon = (
   <svg
     width="26"
@@ -47,29 +53,10 @@ const closeIcon2 = (
   </svg>
 );
 function AddAppointment(props) {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    services: "",
-    contact: "",
-    time: "",
-    date: "",
-    duration: "30 Min",
-    status: "Pending",
-    color: "yellow",
-    reminder: "Notify",
-    notified: false,
-    reschedule: false,
-  });
-  const [formErrors, setFormErrors] = useState({
-    name: "",
-    email: "",
-    services: "",
-    contact: "",
-    time: "",
-    date: "",
-  });
+  const dispatch = useDispatch();
+  const { formData, formErrors } = useSelector((state) => state.addApp);
   const { setShowModal, ShowModal } = useContext(AppContext);
+
   const [open, setOpen] = useState(false);
   const [openSucess, setOpenSucess] = useState(false);
 
@@ -86,101 +73,66 @@ function AddAppointment(props) {
     let isValid = true;
 
     if (!formData.name) {
-      setFormErrors((prevData) => ({
-        ...prevData,
-        name: "Required",
-      }));
+      dispatch(setAppointmentFormError({ ...formErrors, name: "Required" }));
       isValid = false;
     } else if (formData.name.length < 8) {
-      setFormErrors((prevData) => ({
-        ...prevData,
-        name: "Minimum 8 letters",
-      }));
+      dispatch(
+        setAppointmentFormError({ ...formErrors, name: "Minimum 8 Character" })
+      );
       isValid = false;
     } else {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        name: "",
-      }));
+      dispatch(setAppointmentFormError({ ...formErrors, name: "" }));
     }
 
     if (!formData.email) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        email: "Required",
-      }));
+      dispatch(setAppointmentFormError({ ...formErrors, email: "Required" }));
       isValid = false;
     } else {
       const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
 
       if (!emailRegex.test(formData.email)) {
-        setFormErrors((prevState) => ({
-          ...prevState,
-          email: "Invalid",
-        }));
+        dispatch(setAppointmentFormError({ ...formErrors, name: "Invalid" }));
 
         isValid = false;
       } else {
-        setFormErrors((prevState) => ({
-          ...prevState,
-          email: "",
-        }));
+        dispatch(setAppointmentFormError({ ...formErrors, name: "" }));
       }
     }
     if (!formData.contact) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        contact: " Required",
-      }));
+      dispatch(setAppointmentFormError({ ...formErrors, contact: "Required" }));
       isValid = false;
     } else if (!/^[0-9]{10}$/i.test(formData.contact)) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        contact: "Invalid",
-      }));
+      dispatch(setAppointmentFormError({ ...formErrors, contact: "Invalid" }));
       isValid = false;
     } else {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        contact: "",
-      }));
+      dispatch(setAppointmentFormError({ ...formErrors, contact: "" }));
     }
     if (!formData.services) {
-      setFormErrors((prevData) => ({
-        ...prevData,
-        services: "Select a Service",
-      }));
+      dispatch(
+        setAppointmentFormError({ ...formErrors, services: "Select a Service" })
+      );
       isValid = false;
     } else {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        services: "",
-      }));
+      dispatch(
+        setAppointmentFormError({ ...formErrors, services: "Required" })
+      );
     }
 
     if (!formData.date) {
-      setFormErrors((prevData) => ({
-        ...prevData,
-        date: "Select a Date",
-      }));
+      dispatch(
+        setAppointmentFormError({ ...formErrors, date: "Select a Date" })
+      );
       isValid = false;
     } else {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        date: "",
-      }));
+      dispatch(setAppointmentFormError({ ...formErrors, date: "" }));
     }
     if (!formData.time) {
-      setFormErrors((prevData) => ({
-        ...prevData,
-        time: "Select a Time",
-      }));
+      dispatch(
+        setAppointmentFormError({ ...formErrors, time: "Select a time" })
+      );
       isValid = false;
     } else {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        time: "",
-      }));
+      dispatch(setAppointmentFormError({ ...formErrors, time: "" }));
     }
 
     return isValid;
@@ -197,20 +149,7 @@ function AddAppointment(props) {
       axios
         .post("http://localhost:3030/Today", formData)
         .then((res) => {
-          setFormData({
-            name: "",
-            email: "",
-            services: "",
-            contact: "",
-            time: "",
-            date: "",
-            duration: "30 Min",
-            status: "Pending",
-            color: "yellow",
-            reminder: "NOTIFY",
-            notified: false,
-            reschedule: false,
-          });
+          dispatch(resetAppointmentForm());
           setShowModal(!ShowModal);
           return res;
         })
@@ -222,27 +161,34 @@ function AddAppointment(props) {
   const handlePhoneNumberChange = (e) => {
     const { value } = e.target;
     const sanitizedValue = value.replace(/[^0-9]/g, "");
-    setFormData((prevState) => ({
-      ...prevState,
-      contact: sanitizedValue,
-    }));
-    setFormErrors((prevState) => ({
-      ...prevState,
-      contact: "",
-    }));
+    dispatch(
+      setAppointmentForm((prevState) => ({
+        ...prevState,
+        contact: sanitizedValue,
+      }))
+    );
+    dispatch(
+      setAppointmentFormError((prevState) => ({
+        ...prevState,
+        contact: "",
+      }))
+    );
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormErrors((prevState) => ({
+    const updatedFormData = (prevState) => ({
       ...prevState,
       [name]: "",
-    }));
+    });
+    dispatch(setAppointmentForm(updatedFormData));
 
     if (name === "services") {
-      setFormData((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
+      dispatch(
+        setAppointmentForm((prevState) => ({
+          ...prevState,
+          [name]: value,
+        }))
+      );
 
       let dynamicTime = "30 Min";
       if (value === "Banana") {
@@ -250,29 +196,37 @@ function AddAppointment(props) {
       } else if (value === "Orange") {
         dynamicTime = "55 Min";
       }
-
-      setFormData((prevState) => ({
-        ...prevState,
-        time: "",
-        duration: dynamicTime,
-      }));
+      dispatch(
+        setAppointmentForm((prevState) => ({
+          ...prevState,
+          time: "",
+          duration: dynamicTime,
+        }))
+      );
     } else {
-      setFormData((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
+      dispatch(
+        setAppointmentForm((prevState) => ({
+          ...prevState,
+          [name]: value,
+        }))
+      );
     }
   };
   const handleSelectedDate = (selectedDate) => {
     // Callback function to set the selected date in the formData state
-    setFormData((prevState) => ({
-      ...prevState,
-      date: selectedDate, // Update the "date" field with the selected date
-    }));
-    setFormErrors((prevState) => ({
-      ...prevState,
-      date: "",
-    }));
+
+    dispatch(
+      setAppointmentForm((prevState) => ({
+        ...prevState,
+        date: selectedDate, // Update the "date" field with the selected date
+      }))
+    );
+    dispatch(
+      setAppointmentFormError((prevState) => ({
+        ...prevState,
+        date: "", // Update the "date" field with the selected date
+      }))
+    );
 
     setOpen(false);
   };

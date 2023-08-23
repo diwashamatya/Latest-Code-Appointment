@@ -7,7 +7,8 @@ import Forget from "../ForgetPassword/Forget";
 import Reset from "../../components/Reset/Reset";
 import Otp from "../OTP/Otp";
 import "./Login.css";
-
+import { useSelector, useDispatch } from "react-redux";
+import { setLoginStatus } from "../../redux/actions/authActions";
 const EyeIcon = () => (
   <svg
     width="18"
@@ -74,7 +75,9 @@ const UnShow = () => (
     </g>
   </svg>
 );
-export default function SignUp() {
+export default function Login() {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
   const [formState, setFormState] = useState({
     email: "",
     password: "",
@@ -124,7 +127,7 @@ export default function SignUp() {
       (da) => da.email === formState.email && da.password === formState.password
     );
     if (result.length > 0) {
-      setLogin(true);
+      dispatch(setLoginStatus(true));
     } else {
       console.log("Invalid email or password");
       setInvalidLogin(true);
@@ -294,11 +297,11 @@ export default function SignUp() {
                 Sign Up
               </span>
             </Link>
-            {login ? <Navigate to="dashboard" /> : null}
+            {isAuthenticated ? <Navigate to="appointment" /> : null}
           </p>
         </form>
         <button onClick={() => setLogin(true)}>
-          -- {login ? <Navigate to="dashboard" /> : null}
+          -- {login ? <Navigate to="appointment" /> : null}
         </button>
       </div>
       {/* <div>

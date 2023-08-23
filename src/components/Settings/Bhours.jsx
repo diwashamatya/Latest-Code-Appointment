@@ -30,14 +30,14 @@ const Bhours = () => {
       <Modal open={modalOpen} onClose={onCloseModal} center className="">
         <BhourModal />
       </Modal>
-      <div className="pb-[20px]">
+      <div className="pb-[20px] w-full border">
         <div
-          className=" bg-[#eef0f6] rounded-[8px] sm:p-5 p-2 shadow-md w-full xl:w-[1030px]"
+          className=" bg-[#eef0f6] rounded-[8px] sm:p-5 p-2 shadow-md md:w-[100%] "      
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           <div className="flex justify-between ">
-            <h1 className="text-[22px] text-[#0C1A97]">Business Hours</h1>
+            <h1 className=" md:text-[2rem] xl:text-[4rem] text-[#0C1A97]">Business Hours</h1>
 
             {isHovering && (
               <button onClick={openModal}>
@@ -45,14 +45,14 @@ const Bhours = () => {
               </button>
             )}
           </div>
-          <div className="flex gap-5 sm:gap-11 pt-3">
+          <div className="flex  gap-5 sm:gap-11 pt-3">
             <h3 className="w-[90px] sm:w-[110px] text-[14px] sm:font-medium">
               Business Days
             </h3>
-            <div className="flex gap-2 md:gap-8">
-              <h2 className="sm:w-[60px]  text-[14px] sm:font-medium">Monday</h2>
-              <p>-</p>
-              <h2 className="sm:w-[60px]  text-[14px] sm:font-medium">Monday</h2>
+            <div className="flex gap-2 border md:gap-8">
+              <h2 className="sm:w-[60px] md:text-[14px] lg:text-[20px]  xl:text-[29px]  sm:font-medium">Monday</h2>
+              <p className="md:text-[14px] lg:text-[20px]  xl:text-[29px]">-</p>
+              <h2 className="sm:w-[60px]  md:text-[14px] lg:text-[20px]  xl:text-[29px] sm:font-medium">Monday</h2>
             </div>
           </div>
           <div className="flex gap-5 sm:gap-11 pt-3">

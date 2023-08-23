@@ -11,8 +11,13 @@
   padding: 0%;
   background-color: #fafafa;
 }
+.customModal4 {
+  padding: 10px;
+}
+.customOverlay4 {
+  background-color: rgba(0, 0, 0, 0.182);
+}
 .customButton2 {
   top: 12px;
   right: 14px;
-  
 }

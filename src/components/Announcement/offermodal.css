@@ -4,15 +4,15 @@
   padding: 10px;
   width:40px; */
 }
-.react-responsive-modal-modal{
+.react-responsive-modal-modal {
   border-radius: 10px;
   padding: 0;
   margin: 0;
 }
 .customModalTransparent {
   margin: 0 !important;
-  background:none;
-  padding:0 !important;
+  background: none;
+  padding: 0 !important;
 }
 
 .customButton {
@@ -20,5 +20,3 @@
   right: 8px;
   padding: 20px; */
 }
-
-

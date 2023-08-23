@@ -1,23 +1,16 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setFormState,
+  setFormErrors,
+  resetFormState,
+} from "../../redux/actions/signupActions";
 export default function SignUp() {
-  const [formState, setFormState] = useState({
-    name: "",
-    email: "",
-    phoneNumber: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const dispatch = useDispatch();
+  const { formState, formErrors } = useSelector((state) => state.signup);
 
-  const [formErrors, setFormErrors] = useState({
-    name: "",
-    email: "",
-    phoneNumber: "",
-    password: "",
-    confirmPassword: "",
-  });
   const [login, setLogin] = useState(false);
   // const [isFocused, setIsFocused] = useState(false);
 
@@ -31,123 +24,64 @@ export default function SignUp() {
 
   const validateForm = () => {
     let isValid = true;
+    let updatedFormErrors = {};
 
     if (!formState.name) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        name: "Name is required",
-      }));
+      updatedFormErrors.name = "Required";
       isValid = false;
     } else if (formState.name.length < 8) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        name: " Must be at least 8 characters",
-      }));
+      updatedFormErrors.name = "Minimum 8 characters";
       isValid = false;
-    } else {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        name: "",
-      }));
     }
 
     if (!formState.email) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        email: "Required",
-      }));
+      updatedFormErrors.email = "Required";
       isValid = false;
     } else {
       const emailRegex = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
-
       if (!emailRegex.test(formState.email)) {
-        setFormErrors((prevState) => ({
-          ...prevState,
-          email: "Invalid",
-        }));
+        updatedFormErrors.email = "Invalid email";
         isValid = false;
-      } else {
-        setFormErrors((prevState) => ({
-          ...prevState,
-          email: "",
-        }));
       }
     }
 
     if (!formState.phoneNumber) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        phoneNumber: " Required",
-      }));
+      updatedFormErrors.phoneNumber = "Required";
       isValid = false;
     } else if (!/^[0-9]{10}$/i.test(formState.phoneNumber)) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        phoneNumber: "Invalid",
-      }));
+      updatedFormErrors.phoneNumber = "Invalid phone number";
       isValid = false;
-    } else {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        phoneNumber: "",
-      }));
     }
 
     if (!formState.password) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        password: "Required",
-      }));
+      updatedFormErrors.password = "Required";
       isValid = false;
     } else if (formState.password.length < 6) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        password: " Must be at least 6 characters long",
-      }));
+      updatedFormErrors.password = "Minimum 6 characters";
       isValid = false;
-    } else {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        password: "",
-      }));
     }
 
     if (!formState.confirmPassword) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        confirmPassword: " Required",
-      }));
+      updatedFormErrors.confirmPassword = "Required";
       isValid = false;
     } else if (formState.confirmPassword !== formState.password) {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        confirmPassword: " Password does not match",
-      }));
+      updatedFormErrors.confirmPassword = "Passwords do not match";
       isValid = false;
-    } else {
-      setFormErrors((prevState) => ({
-        ...prevState,
-        confirmPassword: "",
-      }));
     }
 
+    dispatch(setFormErrors(updatedFormErrors)); // Update form errors
     return isValid;
   };
 
   function handleSubmit(e) {
     e.preventDefault();
     console.log(formState);
+    console.log(formErrors);
     if (validateForm()) {
       axios
         .post("http://localhost:3030/login", formState)
         .then((res) => {
-          setFormState({
-            name: "",
-            email: "",
-            phoneNumber: "",
-            password: "",
-            confirmPassword: "",
-          });
+          dispatch(resetFormState());
           setLogin(true);
 
           return res.data;
@@ -161,27 +95,25 @@ export default function SignUp() {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormState((prevState) => ({
-      ...prevState,
+    const updatedFormData = {
+      ...formState,
       [name]: value,
-    }));
-    setFormErrors((prevState) => ({
-      ...prevState,
-      [name]: "",
-    }));
+    };
+    dispatch(setFormState(updatedFormData));
+    dispatch(setFormErrors({ ...formErrors, [name]: "" }));
   };
 
   const handlePhoneNumberChange = (e) => {
     const { value } = e.target;
     const sanitizedValue = value.replace(/[^0-9]/g, "");
-    setFormState((prevState) => ({
-      ...prevState,
+
+    const updatedFormState = {
+      ...formState,
       phoneNumber: sanitizedValue,
-    }));
-    setFormErrors((prevState) => ({
-      ...prevState,
-      phoneNumber: "",
-    }));
+    };
+
+    dispatch(setFormState(updatedFormState));
+    dispatch(setFormErrors({ ...formErrors, phoneNumber: "" })); // Update form state using Redux
   };
 
   return (

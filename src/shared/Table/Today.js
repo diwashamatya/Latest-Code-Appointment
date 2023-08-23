@@ -69,18 +69,6 @@ function Total() {
     };
   }, []);
 
-  // const handleNotifyClick = (itemId) => {
-  //   // Find the item in the data array and update its notified state
-  //   const updatedData = data.map((item) => {
-  //     if (item.id === itemId) {
-  //       return { ...item, notified: true };
-  //     }
-  //     return item;
-  //   });
-
-  //   // Update the data array with the updatedData
-  //   setData(updatedData);
-  // };
   const handleNotifyClick = (itemId) => {
     axios
       .get(`http://localhost:3030/Today/${itemId}`)

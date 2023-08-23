@@ -11,6 +11,8 @@ import Detail from "../AppointmentDetail/Detail";
 import AcceptTick from "../../assets/AcceptTick.svg";
 import Reschedule from "../../assets/Reschedule.svg";
 import Delete from "../../assets/delete.svg";
+import { motion } from "framer-motion";
+import Pagination from "../../shared/Pagination/Pagination";
 
 const closeIcon = (
   <svg
@@ -46,10 +48,55 @@ const closeIcon2 = (
     />
   </svg>
 );
-function Total() {
+function Completed() {
   const [data, setData] = useState([
     {
       id: 1,
+      name: "Diwash Raj Amatya",
+      email: "Test@gmail.com",
+      contact: "9842411394",
+      date: "2023/Jul/06",
+      services: "Legal Consultant",
+      time: "6:00AM",
+      duration: "30 Min",
+      color: "yellow",
+      status: "Accepted",
+      reminder: "Notify",
+      notified: false,
+    },
+    {
+      id: 2,
+
+      name: "Diwash Raj Amatya",
+      email: "Test@gmail.com",
+      contact: "9842411394",
+      date: "2023/Jul/06",
+      services: "Legal Consultant",
+      time: "6:00AM",
+      duration: "30 Min",
+      color: "yellow",
+      status: "Rejected",
+      reminder: "Notify",
+      notified: false,
+    },
+    {
+      id: 3,
+
+      name: "Diwash Raj Amatya",
+      email: "Test@gmail.com",
+      contact: "9842411394",
+      date: "2023/Jul/06",
+      services: "Legal Consultant",
+      time: "6:00AM",
+      duration: "30 Min",
+      color: "yellow",
+      status: "Rejected",
+      reminder: "Notify",
+      notified: false,
+    },
+    {
+      id: 4,
+
       name: "Diwash Raj Amatya",
       email: "Test@gmail.com",
       contact: "9842411394",
@@ -63,8 +110,21 @@ function Total() {
       notified: false,
     },
     {
-      id: 2,
-
+      id: 5,
+      name: "Diwash Raj Amatya",
+      email: "Test@gmail.com",
+      contact: "9842411394",
+      date: "2023/Jul/06",
+      services: "Legal Consultant",
+      time: "6:00AM",
+      duration: "30 Min",
+      color: "yellow",
+      status: "Pending",
+      reminder: "Notify",
+      notified: false,
+    },
+    {
+      id: 6,
       name: "Diwash Raj Amatya",
       email: "Test@gmail.com",
       contact: "9842411394",
@@ -83,6 +143,18 @@ function Total() {
   const [open2, setOpen2] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [expandedItem, setExpandedItem] = useState(null);
+  const [showNotified, setShowNotified] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+  const onPageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const toggleExpand = (itemId) => {
+    setExpandedItem(itemId === expandedItem ? null : itemId);
+    setShowNotified(false);
+  };
 
   const onOpenModal = () => {
     setOpen(true);
@@ -134,110 +206,72 @@ function Total() {
 
     setData(updatedData);
   };
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentData = data.slice(startIndex, endIndex);
+
   return (
-    <div className="border w-full overflow-x-auto p-2 ">
-      <table className="w-[800px] md:w-full h-full">
-        <thead className="bg-[#E2F2FA]">
-          <tr className="h-[50px] text-[16px] md:text-[100%]">
-            <th className="border font-normal w-[3%]">ID</th>
-            <th className="border font-normal  w-[20%]">Name</th>
-            <th className="border  font-normal w-[15%]">Services</th>
-            <th className="border font-normal w-[10%]">Time</th>
-            <th className="border font-normal w-[10%]">Duration</th>
-            <th className="border  font-normal w-[10%]">Status</th>
-            <th className="border font-normal w-[15%]">Action</th>
-            <th className="border font-normal w-[15%]">Reminder</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item) => (
-            <tr
-              key={item.id}
-              className="border h-[50%] text-[16px] md:text-[16px] md:h-[60px]"
-            >
-              <td className="border text-center w-[5%] md:w-[3%]">{item.id}</td>
-              <td className="border text-center w-[25%] md:w-[20%]">
-                <button onClick={() => onOpenDetailModal(item.id)}>
-                  {item.name}
-                </button>
-              </td>
-              <td className="border text-center w-[20%] md:w-[15%]">
-                {item.services}
-              </td>
-              <td className="border  text-center  w-[15%] md:w-[10%]">
-                {item.time}
-              </td>
-              <td className="border   text-center w-[15%] md:w-[10%]">
-                {item.duration}
-              </td>
-              <td className="border  text-center  w-[10%] md:w-[10%]">
-                <div className="md:flex md:justify-evenly md:gap-2  md:items-center  ">
-                  <div className="flex justify-center items-centers">
-                    {item.color === "yellow" ? (
-                      <img className="w-2" src={circle} alt="yellow"></img>
-                    ) : (
-                      <img className="w-2" src={accepted} alt="green"></img>
-                    )}
+    <>
+      <div className="w-full hidden md:flex   ">
+        <table className="w-[800px] md:w-full h-full">
+          <thead className="bg-[#E2F2FA]">
+            <tr className="h-[50px] border   text-[16px] md:text-[100%]">
+              <th className=" font-normal w-[3%]">ID</th>
+              <th className=" font-normal  w-[15%]">Name</th>
+              <th className="  font-normal w-[15%]">Services</th>
+
+              <th className=" font-normal w-[10%]">Contact</th>
+              <th className=" font-normal w-[10%]">Time</th>
+              <th className=" font-normal w-[10%]">Date</th>
+              <th className="  font-normal w-[10%]">Status</th>
+              {/* <th className="border font-normal w-[10%]">Action</th>
+            <th className="border font-normal w-[15%]">Reminder</th> */}
+            </tr>
+          </thead>
+          <tbody>
+            {currentData.map((item) => (
+              <tr
+                key={item.id}
+                className="border h-[50%] text-[16px] md:text-[16px] md:h-[60px]"
+              >
+                <td className=" text-center w-[5%] md:w-[3%]">{item.id}</td>
+                <td className=" text-center w-[25%] md:w-[16%]">
+                  <button onClick={() => onOpenDetailModal(item.id)}>
+                    {item.name}
+                  </button>
+                </td>
+                <td className=" text-center w-[20%] md:w-[15%]">
+                  {item.services}
+                </td>
+
+                <td className="  text-center  w-[15%] md:w-[10%]">
+                  {item.contact}
+                </td>
+                <td className=" text-center  w-[15%] md:w-[10%]">
+                  {item.time}
+                </td>
+                <td className="   text-center w-[15%] md:w-[10%]">
+                  {item.date}
+                </td>
+                <td className="  text-center  w-[10%] md:w-[10%]">
+                  <div className="md:flex md:justify-evenly md:gap-2  md:items-center  ">
+                    <div className="flex justify-center items-centers">
+                      {item.status === "Rejected" ? (
+                        <img className="w-2" src={circle} alt="yellow"></img>
+                      ) : (
+                        <img className="w-2" src={accepted} alt="green"></img>
+                      )}
+                    </div>
+                    <div className="hidden md:block">{item.status}</div>
                   </div>
-                  <div className="hidden md:block">{item.status}</div>
-                </div>
-              </td>
-              <td className="  flex gap-2 flex-col md:flex-row justify-center items-center    md:h-[60px] ">
+                </td>
+                {/* <td className="  flex gap-2 flex-col md:flex-row justify-center items-center    md:h-[60px] ">
                 <button
                   onClick={() => handleCommit(item.id)}
                   className="group relative"
                 >
-                  {item.status === "Pending" ? (
-                    <>
-                      <p className="  hidden md:hidden md:group-hover:block absolute top-0 left-0 p-1 rounded mt-8  bg-white  shadow">
-                        Accept
-                      </p>
-                      <img
-                        className="md:hidden w-[13px] h-[15px]"
-                        src={AcceptTick}
-                        alt="AcceptTick"
-                      ></img>
-                      <div className=" hidden md:block">
-                        <svg
-                          width="17"
-                          height="12"
-                          viewBox="0 0 17 12"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M1 5.94979L5.94975 10.8995L15.8482 1"
-                            stroke="#4EAD07"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <svg
-                        width="17"
-                        height="12"
-                        viewBox="0 0 17 12"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M1 5.94979L5.98139 10.8995L15.9431 1"
-                          stroke="#4EAD07"
-                          stroke-opacity="0.43"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                      <p className=" hidden md:hidden md:group-hover:block absolute top-0 left-0 p-1 rounded mt-8  bg-white shadow">
-                        Accepted
-                      </p>
-                    </>
-                  )}
+                  
                 </button>
                 <button onClick={onOpenModal2} className="group relative">
                   <img
@@ -296,18 +330,17 @@ function Total() {
                   </p>
                 </button>
                 <Modal
-                  className="hello"
                   open={open}
                   onClose={onCloseModal}
                   closeIcon={closeIcon}
                   classNames={{
-                    overlay: "customOverlay",
-                    modal: "customModal",
+                    overlay: "customOverlay4",
+                    modal: "customModal4",
                     closeButton: "customButton",
                   }}
                   center
                 >
-                  <div className=" w-[300px]  flex flex-col justify-center items-start gap-8">
+                  <div className=" w-full sm:w-[270px] md:w-[300px] p-2 md:p-0 flex flex-col justify-center items-start gap-8">
                     <div>
                       <p className="text-[15px]   text-left  tracking-wide w-[100%]  font-roboto ">
                         Are you sure want to delete?
@@ -336,8 +369,8 @@ function Total() {
                     </div>
                   </div>
                 </Modal>
-              </td>
-              <td className=" border">
+              </td> */}
+                {/* <td className=" border">
                 <div className="flex justify-center">
                   {!item.notified ? (
                     <button
@@ -354,108 +387,242 @@ function Total() {
                     </button>
                   )}
                 </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              </td> */}
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      <Modal
-        open={open2}
-        onClose={onCloseModal2}
-        closeIcon={closeIcon}
-        classNames={{
-          overlay: "customOverlay",
-          modal: "customModal2",
-          closeButton: "customButton",
-        }}
-        center
-      >
-        <div className="bg-[#d61818] w-[full] md:w-[300px]">
-          <div className=" h-[50px] flex flex-col items-center justify-center bg-[#aabef5]">
-            <p className=" w-full text-center text-[#1a1a1a] text-[17px] font-sans tracking-[1.3px] font-[400]">
-              Reschedule
-            </p>
-            <div className=" w-full relative">
-              <img
-                src={tick2}
-                className="w-[30px] h-[30px] absolute bottom-[-30px]  left-1/2 transform -translate-x-1/2"
-                alt=""
-              />
-            </div>
-          </div>
-
-          <div className="m-5  p-3 text-[14px] text-center ">
-            Reschedule message has been sent. Thanks
-          </div>
-          <div className="flex items-center justify-center">
-            <button
-              className="bg-[#95AEF4] hover:bg-[#7f9ff5] text-[16px] text-white font-[500] px-[18px] py-[5px] mb-5 rounded-[5px] shadow-md "
-              onClick={onCloseModal2}
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      </Modal>
-      <Modal
-        open={detailOpen}
-        onClose={onCloseDetailModal}
-        closeIcon={closeIcon2}
-        classNames={{
-          overlay: "customOverlay",
-          modal: "customModal3",
-          closeButton: "customButton2",
-        }}
-        center
-      >
-        {selectedItemId !== null && (
-          <>
-            <div className="h-[50px] relative flex justify-center items-center bg-[#8399d6]">
-              <p className=" font-[500] font-serif text-[white] w-full text-center text-[20px] tracking-wider ">
-                Appointment
+        <Modal
+          open={open2}
+          onClose={onCloseModal2}
+          closeIcon={closeIcon}
+          classNames={{
+            overlay: "customOverlay4",
+            modal: "customModal2",
+            closeButton: "customButton",
+          }}
+          center
+        >
+          <div className=" w-[full] md:w-[300px]">
+            <div className=" h-[50px] flex flex-col items-center justify-center bg-[#aabef5]">
+              <p className=" w-full text-center text-[#1a1a1a] text-[17px] font-sans tracking-[1.3px] font-[400]">
+                Reschedule
               </p>
+              <div className=" w-full relative">
+                <img
+                  src={tick2}
+                  className="w-[30px] h-[30px] absolute bottom-[-30px]  left-1/2 transform -translate-x-1/2"
+                  alt=""
+                />
+              </div>
             </div>
 
-            <Detail
-              key={selectedItemId}
-              data={data.find((item) => item.id === selectedItemId)}
-            />
-            <button className="absolute top-[75%] text-[#6262f5] right-[13%] text-center text-[11px] hover:text-[#4949eb] ">
-              See all history
-            </button>
-
-            <div className=" mt-3 mb-5 gap-[90px]  flex justify-evenly">
+            <div className="m-5  p-3 text-[14px] text-center ">
+              Reschedule message has been sent. Thanks
+            </div>
+            <div className="flex items-center justify-center">
               <button
-                type="button"
-                // className="border-none text-white bg-[#517EC1] hover:bg-[#4172bb] rounded-md"
-                // style={{
-                //   padding: "8px 17px 10px 18px",
-                //   boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px",
-                // }}
-                className="bg-[#C5DFF8] hover:bg-[#d9e8f5]  text-[#0b1a1e] text-[17px] rounded   font-serif focus:outline-none px-4 py-1"
-                style={{
-                  boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px",
-                }}
+                className="bg-[#95AEF4] hover:bg-[#7f9ff5] text-[16px] text-white font-[500] px-[18px] py-[5px] mb-5 rounded-[5px] shadow-md "
+                onClick={onCloseModal2}
               >
-                Edit
-              </button>
-              <button
-                type="button"
-                onClick={onCloseDetailModal}
-                className="bg-[rgba(220, 234, 255, 0.30)] text-[17px] text-[#0b1a1e] rounded hover:bg-[#ffffff]  font-serif focus:outline-none px-4 py-2"
-                style={{
-                  boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px",
-                }}
-              >
-                Cancel
+                OK
               </button>
             </div>
-          </>
-        )}
-      </Modal>
-    </div>
+          </div>
+        </Modal>
+        <Modal
+          open={detailOpen}
+          onClose={onCloseDetailModal}
+          closeIcon={closeIcon2}
+          classNames={{
+            overlay: "customOverlay",
+            modal: "customModal3",
+            closeButton: "customButton2",
+          }}
+          center
+        >
+          {selectedItemId !== null && (
+            <>
+              <div className="h-[50px] relative flex justify-center items-center bg-[#8399d6]">
+                <p className=" font-[500] font-serif text-[white] w-full text-center text-[20px] tracking-wider ">
+                  Appointment
+                </p>
+              </div>
+
+              <Detail
+                key={selectedItemId}
+                data={data.find((item) => item.id === selectedItemId)}
+              />
+              <button className="absolute top-[75%] text-[#6262f5] right-[13%] text-center text-[11px] hover:text-[#4949eb] ">
+                See all history
+              </button>
+
+              <div className=" mt-3 mb-5 gap-[90px]  flex justify-evenly">
+                <button
+                  type="button"
+                  // className="border-none text-white bg-[#517EC1] hover:bg-[#4172bb] rounded-md"
+                  // style={{
+                  //   padding: "8px 17px 10px 18px",
+                  //   boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px",
+                  // }}
+                  className="bg-[#C5DFF8] hover:bg-[#d9e8f5]  text-[#0b1a1e] text-[17px] rounded   font-serif focus:outline-none px-4 py-1"
+                  style={{
+                    boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px",
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={onCloseDetailModal}
+                  className="bg-[rgba(220, 234, 255, 0.30)] text-[17px] text-[#0b1a1e] rounded hover:bg-[#ffffff]  font-serif focus:outline-none px-4 py-2"
+                  style={{
+                    boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px",
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+        </Modal>
+      </div>
+      <div className=" w-[100%]   md:hidden items-center flex-col  ">
+        <table className="w-full ">
+          <thead className="border ">
+            <tr className=" h-[50px] text-[13px]   md:text-[15px] bg-[#E2F2FA] ">
+              <th className="font-man  font-medium w-[25%] md:w-[20%]">Name</th>
+              <th className="font-man  font-medium w-[25%] md:w-[20%] ">
+                Services
+              </th>
+
+              <th className="font-man font-medium ">Date</th>
+
+              <th className="font-man font-medium w-[8%] md:w-[14%] ">
+                Status
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentData.map((item) => (
+              <tr
+                key={item.id}
+                className="border h-full text-[13px] md:text-[16px] md:h-[40px]"
+              >
+                <td className="text-center overflow-hidden break-words text-[13px] md:text-[16px]   py-3.5 md:p-5">
+                  <button
+                    type="buttton"
+                    onClick={() => onOpenDetailModal(item.id, item.name)}
+                  >
+                    {item.name}
+                  </button>
+                </td>
+                <td className="text-center overflow-hidden break-words text-[13px]   py-3 px-2   md:text-[16px] md:p-5">
+                  {item.services}
+                </td>
+
+                <td className="   text-center text-[12px]">{item.date}</td>
+
+                <td className="  text-center  px-19 ">
+                  <div className="md:flex md:justify-evenly   md:items-center  ">
+                    <div className="flex justify-center items-center">
+                      {item.status === "Accepted" ? (
+                        <img className="w-2" src={circle} alt="yellow"></img>
+                      ) : (
+                        <img className="w-2" src={accepted} alt="green"></img>
+                      )}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <Modal
+          open={detailOpen}
+          onClose={onCloseDetailModal}
+          closeIcon={closeIcon2}
+          classNames={{
+            overlay: "customOverlay",
+            modal: "customModal3",
+            closeButton: "customButton2",
+          }}
+          center
+        >
+          {selectedItemId !== null && (
+            <>
+              <div className=" py-2 md:py-3   relative flex justify-center items-center bg-[#8399d6]">
+                <p className=" font-[600] font-sans text-[white] w-full text-center text-[20px] tracking-wide ">
+                  Appointment
+                </p>
+              </div>
+
+              <Detail
+                key={selectedItemId}
+                data={data.find((item) => item.id === selectedItemId)}
+              />
+              <div className="group   ">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onCloseDetailModal();
+                  }}
+                  className="absolute   top-[77%] md:top-[75%] text-[#6262f5] right-[15%] md:right-[13%] text-center text-[11px] hover:text-[#4949eb] "
+                >
+                  See all history
+                </button>
+                <p className=" hidden text-[14px] md:hidden md:group-hover:block  absolute  top-[79%] md:top-[60%] right-[15%] md:right-[3%]  p-1 rounded mt-6 ml-6 bg-white shadow">
+                  See User History
+                </p>
+              </div>
+
+              <div className="font-roboto mt-3 mb-6 flex justify-end gap-3 mr-10">
+                <button
+                  type="button"
+                  // className="border-none text-white bg-[#517EC1] hover:bg-[#4172bb] rounded-md"
+                  // style={{
+                  //   padding: "8px 17px 10px 18px",
+                  //   boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px",
+                  // }}
+                  className="bg-[#5C8CBC] border-none  text-[#ffffff] text-[16px] rounded  hover:bg-[#447fba]  font-[600]    focus:outline-none px-4 py-1"
+                  style={{
+                    boxShadow:
+                      "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+                    fontFamily:
+                      "Canva Sans,Noto Sans Variable,Noto Sans,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif",
+                  }}
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  onClick={onCloseDetailModal}
+                  className="bg-[rgba(220, 234, 255, 0.30)] border-[#9681eba0] border-[1px] text-[16px] text-[#0b1a1e] rounded hover:bg-[#ffffff]  font-[600]  focus:outline-none px-4 py-2"
+                  style={{
+                    // boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px",
+                    boxShadow:
+                      "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+                    fontFamily:
+                      "Canva Sans,Noto Sans Variable,Noto Sans,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif",
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+        </Modal>
+      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
+    </>
   );
 }
 
-export default Total;
+export default Completed;
